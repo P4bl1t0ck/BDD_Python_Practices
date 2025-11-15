@@ -1,0 +1,8 @@
+{
+    "server": "localhost,1433",
+    "database": "Catequesis",
+    "username": "superadmin",
+    "password": "UDLa1234",
+    "driver": "ODBC Driver 17 for SQL Server",
+    "connection_string": "DRIVER={ODBC Driver 17 for SQL Server};SERVER=localhost,1433;DATABASE=Catequesis;UID=superadmin;PWD=UDLa1234;"
+}
