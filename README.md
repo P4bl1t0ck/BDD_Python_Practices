@@ -5,6 +5,8 @@ Sistema web desarrollado con Flask para la gestión integral de catequizandos, c
 ## 🚀 Características
 
 - ✅ **Gestión de Catequizandos**: Registro completo, edición y eliminación
+- ✅ **Gestión de Catequistas**: Listado y consulta de catequistas
+- ✅ **Gestión de Parroquias**: Administración de parroquias
 - 📊 **Reportes y Estadísticas**: Visualización de datos en tiempo real
 - 🎨 **Interfaz Moderna**: Diseño responsive y amigable
 - 🔒 **Validación de Datos**: Validación en cliente y servidor
@@ -14,104 +16,145 @@ Sistema web desarrollado con Flask para la gestión integral de catequizandos, c
 ## 📋 Requisitos Previos
 
 - Python 3.8 o superior
-- SQL Server (con la base de datos Catequesis configurada)
-- ODBC Driver 17 for SQL Server
+- SQL Server con soporte para ODBC
+- ODBC Driver 17 for SQL Server (o superior)
 
 ## 🛠️ Instalación
 
 ### 1. Clonar o descargar el proyecto
 
 ```bash
-cd BDD_Python_Practices
+git clone <url-del-repositorio>
+cd <nombre-del-proyecto>
 ```
 
 ### 2. Crear entorno virtual
 
+#### Windows (CMD/PowerShell)
+```bash
+python -m venv venv
+```
+
+#### macOS/Linux
 ```bash
 python3 -m venv venv
 ```
 
 ### 3. Activar el entorno virtual
 
-**macOS/Linux:**
+#### Windows (CMD)
+```bash
+venv\Scripts\activate.bat
+```
+
+#### Windows (PowerShell)
+```bash
+venv\Scripts\Activate.ps1
+```
+
+#### macOS/Linux
 ```bash
 source venv/bin/activate
 ```
 
-**Windows:**
-```bash
-venv\Scripts\activate
-```
-
 ### 4. Instalar dependencias
 
+#### Todas las plataformas
 ```bash
 pip install -r requirements.txt
 ```
 
 ### 5. Configurar la base de datos
 
-Asegúrese de que el archivo `Conecction.json` contenga las credenciales correctas:
+Cree y configure el archivo `Conecction.json` con sus credenciales:
 
 ```json
 {
-    "server": "localhost,1433",
-    "database": "Catequesis",
-    "username": "Catequesis",
-    "password": "Udla1234",
+    "server": "nombre-servidor,puerto",
+    "database": "nombre-base-datos",
+    "username": "usuario",
+    "password": "contraseña",
     "driver": "ODBC Driver 17 for SQL Server"
 }
 ```
 
-### 6. Ejecutar los scripts SQL
+**Ejemplo:**
+```json
+{
+    "server": "localhost,1433",
+    "database": "Catequesis",
+    "username": "usuario_db",
+    "password": "contraseña_segura",
+    "driver": "ODBC Driver 17 for SQL Server"
+}
+```
 
-Ejecute los siguientes scripts en orden:
+### 6. Configurar la base de datos SQL Server
+
+Ejecute los siguientes scripts SQL en orden:
 
 1. `CreateDatabase.sql` - Crea la base de datos
-2. `UserCreation.sql` - Crea el usuario
-3. `GrantPermissions.sql` - Otorga permisos
+2. `UserCreation.sql` - Crea el usuario de base de datos
+3. `GrantPermissions.sql` - Otorga los permisos necesarios
 4. `StoredProcedures.sql` - Crea los procedimientos almacenados
-5. `InsertTestData.sql` - Inserta datos de prueba
+5. `InsertTestData.sql` - (Opcional) Inserta datos de prueba
 
 ## ▶️ Ejecución
 
 ### Modo de desarrollo
 
+#### Windows
 ```bash
 python app.py
 ```
 
-La aplicación estará disponible en: `http://localhost:5000`
+#### macOS/Linux
+```bash
+python3 app.py
+```
+
+La aplicación estará disponible en: `http://localhost:5001`
 
 ### Modo de producción
 
-Para desplegar en producción, se recomienda usar un servidor WSGI como Gunicorn:
+Para desplegar en producción, use un servidor WSGI:
 
+#### Con Gunicorn (Linux/macOS)
 ```bash
 pip install gunicorn
-gunicorn -w 4 -b 0.0.0.0:5000 app:app
+gunicorn -w 4 -b 0.0.0.0:5001 app:app
+```
+
+#### Con Waitress (Windows/Linux/macOS)
+```bash
+pip install waitress
+waitress-serve --host=0.0.0.0 --port=5001 app:app
 ```
 
 ## 📂 Estructura del Proyecto
 
 ```
-BDD_Python_Practices/
+proyecto/
 ├── app.py                      # Aplicación Flask principal
 ├── database.py                 # Configuración de base de datos
 ├── CRUD.py                     # Script de línea de comandos (legacy)
-├── Conecction.json            # Configuración de conexión
+├── Conecction.json            # Configuración de conexión (crear manualmente)
 ├── requirements.txt           # Dependencias Python
-├── README.md                  # Este archivo
+├── README.md                  # Documentación principal
 │
 ├── templates/                 # Plantillas HTML
 │   ├── base.html             # Plantilla base
 │   ├── index.html            # Página principal
 │   ├── reportes.html         # Página de reportes
 │   ├── error.html            # Página de error
-│   └── catequizandos/
-│       ├── listar.html       # Lista de catequizandos
-│       ├── nuevo.html        # Formulario de registro
-│       └── editar.html       # Formulario de edición
+│   ├── catequizandos/        # Templates de catequizandos
+│   │   ├── listar.html
+│   │   ├── nuevo.html
+│   │   └── editar.html
+│   ├── catequistas/          # Templates de catequistas
+│   │   └── listar.html
+│   └── parroquias/           # Templates de parroquias
+│       └── listar.html
 │
 ├── static/                    # Archivos estáticos
 │   ├── css/
@@ -119,23 +162,36 @@ BDD_Python_Practices/
 │   └── js/
 │       └── script.js         # JavaScript
 │
-└── venv/                      # Entorno virtual (no incluir en git)
+├── venv/                      # Entorno virtual (no incluir en git)
+│
+└── SQL Scripts/               # Scripts de base de datos
+    ├── CreateDatabase.sql
+    ├── UserCreation.sql
+    ├── GrantPermissions.sql
+    ├── StoredProcedures.sql
+    └── InsertTestData.sql
 ```
 
 ## 🎯 Funcionalidades
 
 ### Catequizandos
-
-- **Listar**: Ver todos los catequizandos registrados con búsqueda en tiempo real
+- **Listar**: Ver todos los catequizandos con búsqueda en tiempo real
 - **Registrar**: Formulario completo con validación
-- **Editar**: Actualizar teléfono y observaciones
-- **Eliminar**: Confirmación antes de eliminar
+- **Editar**: Actualizar información de contacto
+- **Eliminar**: Eliminación con confirmación
+
+### Catequistas
+- **Listar**: Consultar todos los catequistas registrados
+- **Búsqueda**: Filtrado por nombre, rol o parroquia
+
+### Parroquias
+- **Listar**: Ver todas las parroquias
+- **Búsqueda**: Filtrado por nombre, dirección o vicaría
 
 ### Reportes
-
 - Estadísticas generales del sistema
 - Estado de pagos de inscripciones
-- Gráficos visuales
+- Visualización con gráficos
 
 ## 🔧 Tecnologías Utilizadas
 
@@ -182,38 +238,124 @@ BDD_Python_Practices/
 
 ### Error de conexión a la base de datos
 
+**Verificar que SQL Server esté ejecutándose:**
+
+#### Windows
 ```bash
-# Verificar que SQL Server esté corriendo
-# macOS/Linux con Docker:
+# Verificar servicio de SQL Server
+services.msc
+# Buscar "SQL Server" y verificar que esté en ejecución
+```
+
+#### macOS/Linux (con Docker)
+```bash
+# Verificar contenedor de SQL Server
 docker ps | grep sqlserver
 
-# Verificar el driver ODBC
+# Iniciar SQL Server si no está corriendo
+docker start <nombre-contenedor>
+```
+
+**Verificar driver ODBC instalado:**
+
+#### Windows
+- Panel de Control → Herramientas Administrativas → Orígenes de datos ODBC
+- Verificar que "ODBC Driver 17 for SQL Server" esté instalado
+
+#### macOS
+```bash
+# Instalar unixODBC
+brew install unixodbc
+
+# Verificar drivers instalados
+odbcinst -q -d
+```
+
+#### Linux
+```bash
+# Instalar dependencias ODBC
+sudo apt-get update
+sudo apt-get install unixodbc unixodbc-dev
+
+# Verificar drivers instalados
 odbcinst -q -d
 ```
 
 ### Error al importar pyodbc
 
-```bash
-# macOS: Instalar unixODBC
-brew install unixodbc
+#### Windows
+- Descargar e instalar [Microsoft ODBC Driver for SQL Server](https://docs.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server)
+- Reinstalar pyodbc: `pip install --upgrade pyodbc`
 
-# Linux: 
-sudo apt-get install unixodbc unixodbc-dev
+#### macOS
+```bash
+brew install unixodbc
+pip install --upgrade pyodbc
 ```
 
-## 👥 Autor
+#### Linux
+```bash
+sudo apt-get install unixodbc unixodbc-dev
+pip install --upgrade pyodbc
+```
 
-Mateo Cisneros - Proyecto Integrador - Universidad de las Américas
+### Error: "Address already in use" (Puerto ocupado)
+
+#### Windows
+```bash
+# Encontrar proceso usando el puerto
+netstat -ano | findstr :5001
+
+# Terminar proceso (reemplazar PID con el número encontrado)
+taskkill /PID <PID> /F
+```
+
+#### macOS/Linux
+```bash
+# Encontrar y terminar proceso
+lsof -ti:5001 | xargs kill -9
+```
+
+### Problemas con permisos en Windows
+
+Si PowerShell no permite ejecutar scripts:
+
+```powershell
+# Ejecutar PowerShell como Administrador
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+## 👥 Créditos
+
+Sistema desarrollado como proyecto de gestión de catequesis.
 
 ## 📄 Licencia
 
 Este proyecto fue desarrollado con fines educativos.
 
+## 🔐 Configuración de Seguridad
+
+### Antes de desplegar en producción:
+
+1. **Cambiar la clave secreta**
+   - Editar `app.py` y cambiar `app.secret_key` por un valor aleatorio seguro
+   - Ejemplo: Usar `python -c "import secrets; print(secrets.token_hex(32))"`
+
+2. **Usar variables de entorno**
+   - Crear archivo `.env` para credenciales sensibles
+   - No incluir `Conecction.json` ni `.env` en el control de versiones
+
+3. **Desactivar modo debug**
+   - En `app.py`, cambiar `debug=True` a `debug=False`
+
+4. **Configurar HTTPS**
+   - Usar certificados SSL/TLS en producción
+   - Considerar usar servicios como Let's Encrypt
+
 ## 🔜 Mejoras Futuras
 
 - [ ] Sistema de autenticación de usuarios
-- [ ] Gestión completa de catequistas
-- [ ] Gestión de parroquias
+- [ ] CRUD completo para catequistas y parroquias
 - [ ] Gestión de grupos y niveles
 - [ ] Emisión de certificados en PDF
 - [ ] Dashboard con gráficos interactivos
@@ -221,13 +363,21 @@ Este proyecto fue desarrollado con fines educativos.
 - [ ] Sistema de notificaciones por correo
 - [ ] API REST completa
 - [ ] Backup automático de base de datos
+- [ ] Roles y permisos de usuario
 
 ## 📞 Soporte
 
-Para reportar problemas o sugerencias, contactar al desarrollador.
+Para reportar problemas o sugerencias:
+1. Revisar la documentación incluida
+2. Verificar la sección de solución de problemas
+3. Crear un issue en el repositorio
+
+## 📄 Licencia
+
+Este proyecto fue desarrollado con fines educativos.
 
 ---
 
 **Versión**: 1.0.0  
-**Fecha**: Noviembre 2024  
+**Última Actualización**: Noviembre 2024  
 **Estado**: ✅ Funcional
