@@ -1,0 +1,79 @@
+{
+    "navigationPane": {
+        "collapsedNodes": []
+    },
+    "propertiesPane": {
+        "collapsedNodes": [
+            "602538e0-1513-4b04-9ba8-62842a3a78ff",
+            "54248d98-e6a6-4469-9b78-8738efeeda0c",
+            "2096c136-2cd4-4c16-80fb-5de5fefc273c",
+            "d761ffe4-a54a-496c-af4c-828b18033293",
+            "3eaaad00-2ac4-45d8-a512-6ec7cb517cf3",
+            "f3544a0c-a522-4a37-b22f-41deed1ee7c9",
+            "85b48d31-fdcf-47cc-b2ed-44b8b1fb000c",
+            "9d61862e-99c8-436e-83fd-fe3ad5536670",
+            "dabd9019-4399-4eee-99e8-f9e8d9a128b6",
+            "7ca1ee69-e08a-4562-a2f7-a30e8cdbe630"
+        ],
+        "activeTab": 0,
+        "focusNameField": false
+    },
+    "tabs": {
+        "id": -1,
+        "topTabs": [
+            {
+                "id": "a6e8c205-8a78-40be-a326-ffa85beec180",
+                "name": "Catequista",
+                "type": "collection"
+            },
+            {
+                "id": "020284ec-935a-41dd-ae2e-a1e14ee6879a",
+                "name": "GrupoCatequesis",
+                "type": "collection"
+            },
+            {
+                "id": "725dcc95-b0af-4b9b-bd41-1e5b49c2bf66",
+                "name": "Parroquia",
+                "type": "collection"
+            },
+            {
+                "id": "6d8956b0-6387-45bc-82be-9fe7d74ecb51",
+                "name": "Certificado",
+                "type": "collection"
+            },
+            {
+                "id": "d2b65b28-8911-4d27-9d59-62127c9143aa",
+                "name": "Sacramento",
+                "type": "collection"
+            },
+            {
+                "id": "e57322fd-08b8-4176-839b-d055cddb7a76",
+                "name": "Catequizando",
+                "type": "collection"
+            }
+        ],
+        "bottomTabs": {
+            "model": {
+                "active": "forward_engineering"
+            },
+            "collection": {
+                "a6e8c205-8a78-40be-a326-ffa85beec180": "schema",
+                "020284ec-935a-41dd-ae2e-a1e14ee6879a": "schema",
+                "725dcc95-b0af-4b9b-bd41-1e5b49c2bf66": "schema",
+                "6d8956b0-6387-45bc-82be-9fe7d74ecb51": "schema",
+                "d2b65b28-8911-4d27-9d59-62127c9143aa": "schema",
+                "e57322fd-08b8-4176-839b-d055cddb7a76": "schema"
+            },
+            "diagramView": {},
+            "views": {}
+        }
+    },
+    "selectedObject": {
+        "category": "bucket",
+        "path": [
+            "96092f9f-76de-4139-9d8d-bc83079b4591"
+        ],
+        "modelId": "f33f5a40-3baf-47a4-a56d-46e940e5a282",
+        "objectBrowser": false
+    }
+}
