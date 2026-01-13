@@ -99,18 +99,85 @@
             <h3><i class="fas fa-certificate"></i> Información de Bautismo</h3>
             
             <div class="form-group">
-                <label for="id_bautismo">
+                <label for="opcion_bautismo">
                     <i class="fas fa-cross"></i> Fe de Bautismo *
                 </label>
-                <select id="id_bautismo" name="id_bautismo" required>
-                    <option value="">Seleccione una Fe de Bautismo</option>
-                    {% for fb in febautismos %}
-                    <option value="{{ fb.ID_Bautismo }}">
-                        {{ fb.ID_Bautismo }} - {{ fb.ParroquiaBautizo }} 
-                        ({{ fb.FechaBautismo.strftime('%d/%m/%Y') if fb.FechaBautismo else 'Sin fecha' }})
-                    </option>
-                    {% endfor %}
+                <select id="opcion_bautismo" name="opcion_bautismo" required onchange="toggleBautismoForm()">
+                    <option value="">Seleccione una opción</option>
+                    <option value="nuevo">➕ Crear Nueva Fe de Bautismo</option>
+                    <option value="existente">📋 Seleccionar Fe de Bautismo Existente</option>
                 </select>
+            </div>
+
+            <!-- Sección para crear nuevo FeBautismo -->
+            <div id="nuevo-bautismo-section" style="display: none;">
+                <div class="info-box" style="background: #e8f5e9; border-left: 4px solid #4CAF50; margin-bottom: 1rem;">
+                    <p><i class="fas fa-info-circle"></i> Creando nueva Fe de Bautismo</p>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nuevo_id_bautismo">
+                            <i class="fas fa-hashtag"></i> ID Bautismo *
+                        </label>
+                        <input type="text" id="nuevo_id_bautismo" name="nuevo_id_bautismo" 
+                               maxlength="15" placeholder="Ej: BAU001">
+                        <small>Identificador único del bautismo</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fecha_bautismo">
+                            <i class="fas fa-calendar"></i> Fecha de Bautismo
+                        </label>
+                        <input type="date" id="fecha_bautismo" name="fecha_bautismo">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="parroquia_bautizo">
+                            <i class="fas fa-church"></i> Parroquia de Bautizo
+                        </label>
+                        <input type="text" id="parroquia_bautizo" name="parroquia_bautizo" 
+                               maxlength="25" placeholder="Nombre de la parroquia">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="padrino">
+                            <i class="fas fa-male"></i> Padrino
+                        </label>
+                        <input type="text" id="padrino" name="padrino" 
+                               maxlength="20" placeholder="Nombre del padrino">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="madrina">
+                            <i class="fas fa-female"></i> Madrina
+                        </label>
+                        <input type="text" id="madrina" name="madrina" 
+                               maxlength="20" placeholder="Nombre de la madrina">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección para seleccionar FeBautismo existente -->
+            <div id="existente-bautismo-section" style="display: none;">
+                <div class="form-group">
+                    <label for="id_bautismo">
+                        <i class="fas fa-list"></i> Seleccione Fe de Bautismo *
+                    </label>
+                    <select id="id_bautismo" name="id_bautismo">
+                        <option value="">Seleccione una Fe de Bautismo</option>
+                        {% for fb in febautismos %}
+                        <option value="{{ fb.ID_Bautismo }}">
+                            {{ fb.ID_Bautismo }} - {{ fb.ParroquiaBautizo }} 
+                            ({{ fb.FechaBautismo.strftime('%d/%m/%Y') if fb.FechaBautismo else 'Sin fecha' }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
 
             <div class="form-group">
@@ -171,6 +238,7 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', function(e) {
         const cedula = cedulaInput.value;
         const telefono = telefonoInput.value;
+        const opcionBautismo = document.getElementById('opcion_bautismo').value;
 
         if (cedula.length !== 10) {
             e.preventDefault();
@@ -185,7 +253,54 @@ document.addEventListener('DOMContentLoaded', function() {
             telefonoInput.focus();
             return false;
         }
+
+        // Validar Fe de Bautismo
+        if (opcionBautismo === 'nuevo') {
+            const nuevoIdBautismo = document.getElementById('nuevo_id_bautismo').value;
+            if (!nuevoIdBautismo) {
+                e.preventDefault();
+                alert('Debe ingresar el ID del Bautismo');
+                document.getElementById('nuevo_id_bautismo').focus();
+                return false;
+            }
+        } else if (opcionBautismo === 'existente') {
+            const idBautismo = document.getElementById('id_bautismo').value;
+            if (!idBautismo) {
+                e.preventDefault();
+                alert('Debe seleccionar una Fe de Bautismo existente');
+                document.getElementById('id_bautismo').focus();
+                return false;
+            }
+        } else {
+            e.preventDefault();
+            alert('Debe seleccionar una opción para la Fe de Bautismo');
+            document.getElementById('opcion_bautismo').focus();
+            return false;
+        }
     });
 });
+
+// Función para mostrar/ocultar secciones de bautismo
+function toggleBautismoForm() {
+    const opcion = document.getElementById('opcion_bautismo').value;
+    const nuevoSection = document.getElementById('nuevo-bautismo-section');
+    const existenteSection = document.getElementById('existente-bautismo-section');
+    
+    // Ocultar ambas secciones
+    nuevoSection.style.display = 'none';
+    existenteSection.style.display = 'none';
+    
+    // Limpiar campos
+    document.getElementById('nuevo_id_bautismo').required = false;
+    document.getElementById('id_bautismo').required = false;
+    
+    if (opcion === 'nuevo') {
+        nuevoSection.style.display = 'block';
+        document.getElementById('nuevo_id_bautismo').required = true;
+    } else if (opcion === 'existente') {
+        existenteSection.style.display = 'block';
+        document.getElementById('id_bautismo').required = true;
+    }
+}
 </script>
 {% endblock %}

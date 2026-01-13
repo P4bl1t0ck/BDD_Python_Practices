@@ -68,9 +68,29 @@ def nuevo_catequizando():
             fecha_nac = request.form['fecha_nacimiento']
             telefono = request.form['telefono']
             observaciones = request.form['observaciones']
-            id_bautismo = request.form['id_bautismo']
+            opcion_bautismo = request.form['opcion_bautismo']
             
-            # Insertar en la base de datos
+            # Manejar Fe de Bautismo
+            if opcion_bautismo == 'nuevo':
+                # Crear nuevo FeBautismo
+                nuevo_id_bautismo = request.form['nuevo_id_bautismo']
+                fecha_bautismo = request.form.get('fecha_bautismo', None)
+                parroquia_bautizo = request.form.get('parroquia_bautizo', None)
+                padrino = request.form.get('padrino', None)
+                madrina = request.form.get('madrina', None)
+                
+                with db_config.get_cursor() as cursor:
+                    cursor.execute(
+                        "{CALL sp_InsertarFeBautismo(?, ?, ?, ?, ?)}",
+                        (nuevo_id_bautismo, fecha_bautismo, parroquia_bautizo, padrino, madrina)
+                    )
+                
+                id_bautismo = nuevo_id_bautismo
+            else:
+                # Usar FeBautismo existente
+                id_bautismo = request.form['id_bautismo']
+            
+            # Insertar catequizando en la base de datos
             with db_config.get_cursor() as cursor:
                 cursor.execute(
                     "{CALL sp_InsertarCatequizando(?, ?, ?, ?, ?, ?, ?, ?)}",
@@ -97,7 +117,7 @@ def nuevo_catequizando():
                     'ParroquiaBautizo': row.ParroquiaBautizo,
                     'FechaBautismo': row.FechaBautismo
                 })
-    except:
+    except Exception:
         febautismos_list = []
     
     return render_template('catequizandos/nuevo.html', febautismos=febautismos_list)
